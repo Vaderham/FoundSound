@@ -9,8 +9,9 @@ import java.util.List;
 public class MapRecordViewModel extends AndroidViewModel {
 
     private RecordingRepo repository;
-
     private LiveData<List<Recording>> allRecordings;
+    private boolean recordingState;
+
 
     public MapRecordViewModel(Application application){
         super(application);
@@ -18,9 +19,17 @@ public class MapRecordViewModel extends AndroidViewModel {
         allRecordings = repository.getAllRecordings();
     }
 
-    public void record(){
+    public void newRecording(){
 
+        if(!recordingState){
+            repository.startNewRecording();
+            recordingState = true;
+        }else{
+            repository.stopStopNewRecording();
+            recordingState = false;
+        }
     }
+
 
     public LiveData<List<Recording>> getRecordings() {
         return allRecordings;

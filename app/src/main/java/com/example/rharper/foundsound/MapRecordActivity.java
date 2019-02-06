@@ -1,32 +1,32 @@
 package com.example.rharper.foundsound;
 
 import android.Manifest;
+import android.app.Application;
 import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.GeoDataClient;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlaceDetectionClient;
+import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.io.Console;
-import java.io.File;
-import java.security.Provider;
+
 import java.util.List;
 
 public class MapRecordActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -36,56 +36,42 @@ public class MapRecordActivity extends FragmentActivity implements OnMapReadyCal
     private String [] permissions = {Manifest.permission.RECORD_AUDIO};
     private boolean permissionToRecordAccepted = false;
     private ImageButton recordButton;
-    private Button stopButton;
     private MapRecordViewModel mMapRecordViewModel;
-
-    private AudioRecorder recorder;
+    private GeoDataClient mGeoDataClient;
+    private PlaceDetectionClient mPlaceDetectionClient;
+    private FusedLocationProviderClient mFusedLocationProviderClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_record);
 
+        recordButton = findViewById(R.id.record);
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        mGeoDataClient = Places.getGeoDataClient(this, null);
+        mPlaceDetectionClient = Places.getPlaceDetectionClient(this, null);
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
         ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
 
         mMapRecordViewModel = ViewModelProviders.of(this).get(MapRecordViewModel.class);
-
         mMapRecordViewModel.getRecordings().observe(this, new Observer<List<Recording>>() {
                     @Override
-                    public void onChanged(@Nullable List<Recording> recordings) {
-
-//                        if (recordings.size() < 1){
-//                            String latest = Integer.toString(recordings.get(recordings.size() - 1).getId());
-//                            Toast.makeText(MapRecordActivity.this, latest, Toast.LENGTH_SHORT).show();
-//                        }else{
-//                            Toast.makeText(MapRecordActivity.this, "Hmm, looks like it's empty. Length: " + recordings.size() , Toast.LENGTH_SHORT).show();
-//                        }
-
+                    public void onChanged(@Nullable List<Recording> recordings){
+                        for (int i = 0; i < recordings.size(); i++){
+                            Log.v("DB: ", recordings.get(i).getName());
+                        }
                     }
                 });
-
-        recordButton = findViewById(R.id.record);
-        stopButton = findViewById(R.id.stop);
-
-        final File saveLocation = getFilesDir();
-        recorder = new AudioRecorder("Get location", saveLocation); //TODO: Get this location from Google maps API and update file name.
 
         recordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                recorder.startRecording();
-            }
-        });
-
-        stopButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Recording newRecording = recorder.stopRecording();
-                Toast.makeText(MapRecordActivity.this, newRecording.getName(), Toast.LENGTH_SHORT).show();
+                mMapRecordViewModel.newRecording();
             }
         });
 
@@ -107,14 +93,12 @@ public class MapRecordActivity extends FragmentActivity implements OnMapReadyCal
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
+
+//        LatLng sydney = new LatLng(-34, 151);
+//        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+//        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
     }
+
 }
-
-
-/*
-Update map + data
-Record audio / Stop recording
- */

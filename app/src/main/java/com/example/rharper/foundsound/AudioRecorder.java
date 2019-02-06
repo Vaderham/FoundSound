@@ -2,7 +2,6 @@ package com.example.rharper.foundsound;
 
 import android.media.MediaRecorder;
 import android.util.Log;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
@@ -15,7 +14,7 @@ public class AudioRecorder {
     MediaRecorder mAudioRecorder;
 
     public AudioRecorder(String recordingName, File saveLocation) {
-        mRecordingName = recordingName;
+       mRecordingName = recordingName;
 
        mAudioRecorder = new MediaRecorder();
 

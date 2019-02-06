@@ -10,6 +10,7 @@ public class Recording {
 
     @PrimaryKey(autoGenerate = true)
     private int id;
+
     private Date date;
     private String name;
     private String locationData;
