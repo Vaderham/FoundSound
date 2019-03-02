@@ -2,7 +2,9 @@ package com.example.rharper.foundsound;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.location.Location;
 
+import java.io.File;
 import java.util.Date;
 
 @Entity
@@ -12,12 +14,12 @@ public class Recording {
     private int id;
 
     private Date date;
-    private String name;
-    private String locationData;
+    private String fileName;
+    private Location locationData;
 
-    public Recording(Date date, String name, String locationData) {
+    public Recording(Date date, String fileName, Location locationData) {
         this.date = date;
-        this.name = name;
+        this.fileName = fileName;
         this.locationData = locationData;
     }
 
@@ -37,19 +39,19 @@ public class Recording {
         this.date = date;
     }
 
-    public String getName() {
-        return name;
+    public String getFileName() {
+        return fileName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFileName(String name) {
+        this.fileName = name;
     }
 
-    public String getLocationData() {
+    public Location getLocationData() {
         return locationData;
     }
 
-    public void setLocationData(String locationData) {
+    public void setLocationData(Location locationData) {
         this.locationData = locationData;
     }
 }

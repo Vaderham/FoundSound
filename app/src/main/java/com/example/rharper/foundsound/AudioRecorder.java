@@ -8,14 +8,12 @@ import java.util.Date;
 
 public class AudioRecorder {
 
-    private boolean recordingState = false;
     private static String LOG_TAG = "AUDIO RECORDER";
     private String mRecordingName;
     MediaRecorder mAudioRecorder;
 
     public AudioRecorder(String recordingName, File saveLocation) {
        mRecordingName = recordingName;
-
        mAudioRecorder = new MediaRecorder();
 
        mAudioRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
@@ -33,14 +31,9 @@ public class AudioRecorder {
         mAudioRecorder.start();
     }
 
-    public Recording stopRecording() {
+    public void stopRecording() {
         mAudioRecorder.stop();
         mAudioRecorder.release();
-        Date currentDateTime = new Date();
-        String location = "Location string from Google";
-
-        Recording newRecording = new Recording(currentDateTime, mRecordingName, location);
-        return newRecording;
     }
 
 }

@@ -7,7 +7,7 @@ import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
 
 
-@Database(entities = {Recording.class}, version = 1, exportSchema = false)
+@Database(entities = {Recording.class}, version = 2, exportSchema = false)
 @TypeConverters({TypeConverter.class})
 public abstract class RecordingDatabase extends RoomDatabase {
 
@@ -23,7 +23,7 @@ public abstract class RecordingDatabase extends RoomDatabase {
                     // Create database here
                     INSTANCE =
                             Room.databaseBuilder(context.getApplicationContext(), RecordingDatabase.class, "recordings_db")
-                                    .build();
+                                    .fallbackToDestructiveMigration().build();
                 }
             }
         }
