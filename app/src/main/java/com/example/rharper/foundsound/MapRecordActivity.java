@@ -18,7 +18,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -36,7 +35,6 @@ public class MapRecordActivity extends FragmentActivity implements OnMapReadyCal
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final int DEFAULT_ZOOM = 15;
     private String [] permissions = {Manifest.permission.RECORD_AUDIO, Manifest.permission.ACCESS_FINE_LOCATION};
-    private CircleOptions circleOptions = new CircleOptions();
     private boolean permissionToRecordAccepted = false;
     private boolean mLocationPermissionGranted = false;
     private ImageButton recordButton;
@@ -70,9 +68,10 @@ public class MapRecordActivity extends FragmentActivity implements OnMapReadyCal
             public void onChanged(@Nullable Location location) {
                 LatLng locationLatLng = new LatLng(location.getLatitude(), location.getLongitude());
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(locationLatLng, DEFAULT_ZOOM));
-                circleOptions.center(locationLatLng);
-                mMap.addCircle(circleOptions);
+
+                mMap.addCircle(new CircleOptions().center(locationLatLng).fillColor(142163189).radius(10));
             }
+
         });
 
         recordButton.setOnClickListener(new View.OnClickListener() {

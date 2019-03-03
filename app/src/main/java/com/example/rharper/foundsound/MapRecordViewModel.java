@@ -20,6 +20,8 @@ public class MapRecordViewModel extends AndroidViewModel {
         locationMutableLiveData = new MutableLiveData<>();
         repository = new RecordingRepo(application, locationMutableLiveData);
         allRecordings = repository.getAllRecordings();
+
+        repository.getLocation();
     }
 
     public void newRecording(){

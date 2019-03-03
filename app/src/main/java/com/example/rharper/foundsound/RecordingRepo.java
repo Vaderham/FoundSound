@@ -64,6 +64,10 @@ public class RecordingRepo implements LocationResponseCallback{
         }
     }
 
+    public void getLocation(){
+        locationService.getDeviceLocation();
+    }
+
     @Override
     public void onLocationResponse(Location location) {
         locationMutableLiveData.setValue(location);
