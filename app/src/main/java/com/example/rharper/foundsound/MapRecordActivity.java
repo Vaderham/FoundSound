@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -28,7 +29,7 @@ import java.util.List;
     For now, just update location when user begins recording.
 */
 
-public class MapRecordActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapRecordActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
