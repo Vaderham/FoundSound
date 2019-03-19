@@ -8,10 +8,10 @@ import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageButton;
 
@@ -23,11 +23,9 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-
-/*TODO: Observe location livedata and update map when it changes. (How will this be updated as user moves?)
-    For now, just update location when user begins recording.
-*/
 
 public class MapRecordActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -40,17 +38,20 @@ public class MapRecordActivity extends AppCompatActivity implements OnMapReadyCa
     private boolean mLocationPermissionGranted = false;
     private ImageButton recordButton;
     private MapRecordViewModel mMapRecordViewModel;
+    private BottomSheetAdapter listAdapter;
+
+    private ArrayList<Recording> recordingList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_record);
 
-        recordButton = findViewById(R.id.record);
-
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        recordButton = findViewById(R.id.record);
 
         ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
 
@@ -58,9 +59,10 @@ public class MapRecordActivity extends AppCompatActivity implements OnMapReadyCa
         mMapRecordViewModel.getRecordings().observe(this, new Observer<List<Recording>>() {
                     @Override
                     public void onChanged(@Nullable List<Recording> recordings){
-                        for (int i = 0; i < recordings.size(); i++){
-                            Log.v("DB: ", recordings.get(i).getFileName());
-                        }
+                        recordingList.clear();
+                        recordingList.addAll(recordings);
+
+                        listAdapter.notifyDataSetChanged();
                     }
                 });
 
@@ -72,7 +74,6 @@ public class MapRecordActivity extends AppCompatActivity implements OnMapReadyCa
 
                 mMap.addCircle(new CircleOptions().center(locationLatLng).fillColor(142163189).radius(10));
             }
-
         });
 
         recordButton.setOnClickListener(new View.OnClickListener() {
@@ -82,7 +83,12 @@ public class MapRecordActivity extends AppCompatActivity implements OnMapReadyCa
             }
         });
 
-//        getLocationPermission();
+        RecyclerView bottomSheetRecycler = findViewById(R.id.bottom_sheet_recycler);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+
+        bottomSheetRecycler.setLayoutManager(layoutManager);
+        listAdapter = new BottomSheetAdapter(recordingList);
+        bottomSheetRecycler.setAdapter(listAdapter);
     }
 
     @Override

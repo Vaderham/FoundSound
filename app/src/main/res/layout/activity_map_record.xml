@@ -1,27 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-
-<RelativeLayout android:layout_height="match_parent"
-    android:layout_width="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
-
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/map"
-    android:name="com.google.android.gms.maps.SupportMapFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MapRecordActivity" />
+    tools:context=".MapRecordActivity">
+
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MapRecordActivity" />
 
     <ImageButton
-        android:layout_width="20mm"
-        android:layout_height="wrap_content"
-        android:src="@drawable/baseline_mic_none_black_18dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="20px"
         android:id="@+id/record"
         style="?android:attr/borderlessButtonStyle"
-        />
+        android:layout_width="101dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/baseline_mic_none_black_18dp"
+        app:layout_anchor="@+id/map"
+        app:layout_anchorGravity="bottom|center" />
 
-</RelativeLayout>
+    <include layout="@layout/bottom_sheet" />
+
+</android.support.design.widget.CoordinatorLayout>

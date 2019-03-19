@@ -14,11 +14,13 @@ public class Recording {
     private int id;
 
     private Date date;
+    private String name;
     private String fileName;
     private Location locationData;
 
-    public Recording(Date date, String fileName, Location locationData) {
+    public Recording(Date date, String name, String fileName, Location locationData) {
         this.date = date;
+        this.name = name;
         this.fileName = fileName;
         this.locationData = locationData;
     }
@@ -53,5 +55,13 @@ public class Recording {
 
     public void setLocationData(Location locationData) {
         this.locationData = locationData;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

@@ -6,7 +6,6 @@ import android.arch.lifecycle.MutableLiveData;
 import android.location.Location;
 import android.os.AsyncTask;
 
-import java.io.File;
 import java.util.Date;
 import java.util.List;
 
@@ -19,12 +18,13 @@ public class RecordingRepo implements LocationResponseCallback{
 
     private AudioRecorder recorder;
 
+    private String currentRecordingName;
+
     RecordingRepo(Application application, MutableLiveData<Location> location){
         app = application;
         RecordingDatabase db = RecordingDatabase.getDatabase(application);
         recordingDAO = db.recordingDAO();
         allRecordings = recordingDAO.getAllRecordings();
-
         locationMutableLiveData = location;
         locationService = new LocationService(app, this);
     }
@@ -35,8 +35,8 @@ public class RecordingRepo implements LocationResponseCallback{
 
     public void startNewRecording(){
         locationService.getDeviceLocation();
-
-        recorder = new AudioRecorder("Name", app.getFilesDir());
+        currentRecordingName = generateName();
+        recorder = new AudioRecorder(currentRecordingName, app.getFilesDir());
         recorder.startRecording();
     }
 
@@ -44,7 +44,7 @@ public class RecordingRepo implements LocationResponseCallback{
         //Stop the current recorder, store the recording into the DB.
         recorder.stopRecording();
 
-        insertNewRecordingIntoDB(new Recording(new Date(), "Name", locationMutableLiveData.getValue()));
+        insertNewRecordingIntoDB(new Recording(new Date(), "User name", currentRecordingName, locationMutableLiveData.getValue()));
     }
 
     public void insertNewRecordingIntoDB(Recording newRecording) {
@@ -73,6 +73,9 @@ public class RecordingRepo implements LocationResponseCallback{
         locationMutableLiveData.setValue(location);
     }
 
+    private String generateName(){
+        return new Date().toString();
+    }
 
 }
 
