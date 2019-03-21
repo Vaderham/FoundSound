@@ -34,7 +34,7 @@ public class LocationService {
                             mLastKnownLocation = task.getResult();
                             locationResponse.onLocationResponse(mLastKnownLocation);
                         }else{
-                            Toast.makeText(app, "Hmm, looks like the Get Location task dropped the ball. Maybe look into that...?", Toast.LENGTH_LONG).show();
+                            Log.e("Location error: ", "Nope, no location data annnnnd CRASH!");
                         }
                     }
                 });

@@ -4,26 +4,32 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.Transformations;
 import android.location.Location;
+import android.support.annotation.Nullable;
 
 import java.util.List;
 
 public class MapRecordViewModel extends AndroidViewModel {
 
+    private Application app;
     private RecordingRepo repository;
     private LiveData<List<Recording>> allRecordings;
-    private MutableLiveData<Location> locationMutableLiveData;
+    private MutableLiveData<Location> locationLiveData;
     private boolean recordingState;
 
     public MapRecordViewModel(Application application){
         super(application);
 
-        locationMutableLiveData = new MutableLiveData<>();
-        repository = new RecordingRepo(application, locationMutableLiveData);
+        app = application;
+
+        repository = new RecordingRepo(application);
 
         allRecordings = repository.getAllRecordings();
 
-        repository.getLocation();
+        repository.updateLocation();
+        locationLiveData = repository.getLocation();
     }
 
     public void newRecording(){
@@ -41,11 +47,8 @@ public class MapRecordViewModel extends AndroidViewModel {
         return allRecordings;
     }
 
-    public MutableLiveData<Location> getCurrentLocation() {
-        if (locationMutableLiveData == null) {
-            locationMutableLiveData = new MutableLiveData<>();
-        }
-        return locationMutableLiveData;
+    public MutableLiveData<Location> getCurrentLocation(){
+        return locationLiveData;
     }
 
 }
