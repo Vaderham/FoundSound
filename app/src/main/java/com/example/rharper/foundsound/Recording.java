@@ -4,6 +4,8 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.location.Location;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.io.File;
 import java.util.Date;
 
@@ -16,9 +18,9 @@ public class Recording {
     private Date date;
     private String name;
     private String fileName;
-    private Location locationData;
+    private LatLng locationData;
 
-    public Recording(Date date, String name, String fileName, Location locationData) {
+    public Recording(Date date, String name, String fileName, LatLng locationData) {
         this.date = date;
         this.name = name;
         this.fileName = fileName;
@@ -49,11 +51,11 @@ public class Recording {
         this.fileName = name;
     }
 
-    public Location getLocationData() {
+    public LatLng getLocationData() {
         return locationData;
     }
 
-    public void setLocationData(Location locationData) {
+    public void setLocationData(LatLng locationData) {
         this.locationData = locationData;
     }
 

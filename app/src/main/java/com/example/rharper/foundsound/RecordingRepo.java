@@ -6,6 +6,8 @@ import android.arch.lifecycle.MutableLiveData;
 import android.location.Location;
 import android.os.AsyncTask;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.Date;
 import java.util.List;
 
@@ -15,9 +17,7 @@ public class RecordingRepo implements LocationResponseCallback{
     public MutableLiveData<Location> locationLiveData;
     private Application app;
     private LocationService locationService;
-
     private AudioRecorder recorder;
-
     private String currentRecordingName;
 
     RecordingRepo(Application application){
@@ -46,10 +46,9 @@ public class RecordingRepo implements LocationResponseCallback{
     }
 
     public void stopStopNewRecording(){
-        //Stop the current recorder, store the recording into the DB.
         recorder.stopRecording();
-
-        insertNewRecordingIntoDB(new Recording(new Date(), "User name", currentRecordingName, locationLiveData.getValue()));
+        LatLng hereNow = new LatLng(locationLiveData.getValue().getLatitude(), locationLiveData.getValue().getLongitude());
+        insertNewRecordingIntoDB(new Recording(new Date(), "User name", currentRecordingName, hereNow));
     }
 
     public void insertNewRecordingIntoDB(Recording newRecording) {
@@ -81,10 +80,4 @@ public class RecordingRepo implements LocationResponseCallback{
     private String generateName(){
         return new Date().toString();
     }
-
 }
-
-//TODO: Figure out the order of operations for creating a new recording with live location
-
-//Get location first
-//Pass location to recorder

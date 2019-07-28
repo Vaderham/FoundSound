@@ -3,15 +3,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bottom_sheet_layout"
     android:orientation="vertical"
     android:background="@drawable/rounded_dialog"
     app:behavior_hideable="false"
-    app:behavior_peekHeight="16dp"
+    app:behavior_peekHeight="32dp"
     app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
 
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="16dp"
+            android:layout_height="28dp"
             android:src="@drawable/handle"
             />
 

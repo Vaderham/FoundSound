@@ -13,7 +13,6 @@ import java.util.List;
 
 public class MapRecordViewModel extends AndroidViewModel {
 
-    private Application app;
     private RecordingRepo repository;
     private LiveData<List<Recording>> allRecordings;
     private MutableLiveData<Location> locationLiveData;
@@ -22,18 +21,13 @@ public class MapRecordViewModel extends AndroidViewModel {
     public MapRecordViewModel(Application application){
         super(application);
 
-        app = application;
-
         repository = new RecordingRepo(application);
-
         allRecordings = repository.getAllRecordings();
-
         repository.updateLocation();
         locationLiveData = repository.getLocation();
     }
 
     public void newRecording(){
-
         if(!recordingState){
             repository.startNewRecording();
             recordingState = true;
@@ -49,6 +43,10 @@ public class MapRecordViewModel extends AndroidViewModel {
 
     public MutableLiveData<Location> getCurrentLocation(){
         return locationLiveData;
+    }
+
+    public boolean getRecordingState(){
+        return recordingState;
     }
 
 }
