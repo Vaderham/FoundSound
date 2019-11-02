@@ -1,6 +1,7 @@
 package com.example.rharper.foundsound;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.pm.PackageManager;
@@ -10,20 +11,18 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -37,7 +36,7 @@ import java.util.List;
 - Allow to delete recordings
  */
 
-public class MapRecordActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener, OnRecyclerItemClickListener {
+public class MapRecordActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener, OnRecyclerItemClickListener, RecordingNameDialogFragment.RecordingNameDialogListener {
 
     private GoogleMap mMap;
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
@@ -86,13 +85,25 @@ public class MapRecordActivity extends AppCompatActivity implements OnMapReadyCa
                     }
                 });
 
+        mMapRecordViewModel.getNameCollection().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean aBoolean) {
+                if(aBoolean){
+                    //display dialog and collect name. Call new "save" method. Save needs to set the livedata back to false in VM.
+                    DialogFragment nameDialog = new RecordingNameDialogFragment();
+                    nameDialog.show(getSupportFragmentManager(), "RecordingNameDialogFragment");
+                }
+            }
+        });
+
         recordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mMapRecordViewModel.newRecording();
+
+                //THis could be removed below
                 if (!mMapRecordViewModel.getRecordingState()){
                     Toast.makeText(MapRecordActivity.this, "Fin", Toast.LENGTH_SHORT).show();
-
                 }else{
                     Toast.makeText(MapRecordActivity.this, "Start", Toast.LENGTH_SHORT).show();
                 }
@@ -156,4 +167,10 @@ public class MapRecordActivity extends AppCompatActivity implements OnMapReadyCa
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(recording.getLocationData(), DEFAULT_ZOOM));
     }
+
+    @Override
+    public void onDialogPositiveClick(String name) {
+        mMapRecordViewModel.saveRecordingWithName(name);
+    }
+
 }

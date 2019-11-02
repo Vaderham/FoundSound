@@ -31,6 +31,10 @@ public class AudioRecorder {
         mAudioRecorder.start();
     }
 
+    public void pauseRecording(){
+        mAudioRecorder.pause();
+    }
+
     public void stopRecording() {
         mAudioRecorder.stop();
         mAudioRecorder.release();

@@ -16,6 +16,7 @@ public class MapRecordViewModel extends AndroidViewModel {
     private RecordingRepo repository;
     private LiveData<List<Recording>> allRecordings;
     private MutableLiveData<Location> locationLiveData;
+    private MutableLiveData<Boolean> nameCollection;
     private boolean recordingState;
 
     public MapRecordViewModel(Application application){
@@ -25,6 +26,7 @@ public class MapRecordViewModel extends AndroidViewModel {
         allRecordings = repository.getAllRecordings();
         repository.updateLocation();
         locationLiveData = repository.getLocation();
+        nameCollection = repository.getNameCollection();
     }
 
     public void newRecording(){
@@ -32,10 +34,12 @@ public class MapRecordViewModel extends AndroidViewModel {
             repository.startNewRecording();
             recordingState = true;
         }else{
-            repository.stopStopNewRecording();
+            repository.pauseNewRecording();
             recordingState = false;
         }
     }
+
+
 
     public LiveData<List<Recording>> getRecordings() {
         return allRecordings;
@@ -49,4 +53,11 @@ public class MapRecordViewModel extends AndroidViewModel {
         return recordingState;
     }
 
+    public MutableLiveData<Boolean> getNameCollection(){
+        return nameCollection;
+    }
+
+    public void saveRecordingWithName(String name){
+        repository.stopNewRecording(name);
+    }
 }

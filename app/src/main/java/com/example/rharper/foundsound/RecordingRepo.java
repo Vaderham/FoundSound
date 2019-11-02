@@ -15,6 +15,7 @@ public class RecordingRepo implements LocationResponseCallback{
     private RecordingDAO recordingDAO;
     private LiveData<List<Recording>> allRecordings;
     public MutableLiveData<Location> locationLiveData;
+    private MutableLiveData<Boolean> nameCollection;
     private Application app;
     private LocationService locationService;
     private AudioRecorder recorder;
@@ -28,6 +29,8 @@ public class RecordingRepo implements LocationResponseCallback{
         locationService = new LocationService(app, this);
 
         locationLiveData = new MutableLiveData<>();
+        nameCollection = new MutableLiveData<>();
+        nameCollection.setValue(false);
     }
 
     LiveData<List<Recording>> getAllRecordings() {
@@ -38,6 +41,10 @@ public class RecordingRepo implements LocationResponseCallback{
         return locationLiveData;
     }
 
+    public MutableLiveData<Boolean> getNameCollection(){
+        return nameCollection;
+    }
+
     public void startNewRecording(){
         locationService.getDeviceLocation();
         currentRecordingName = generateName();
@@ -45,10 +52,17 @@ public class RecordingRepo implements LocationResponseCallback{
         recorder.startRecording();
     }
 
-    public void stopStopNewRecording(){
+    public void pauseNewRecording(){
+        recorder.pauseRecording();
+        nameCollection.setValue(true);
+    }
+
+    public void stopNewRecording(String name){
+
+        //TODO: get name from user, set NameCollection to false
         recorder.stopRecording();
         LatLng hereNow = new LatLng(locationLiveData.getValue().getLatitude(), locationLiveData.getValue().getLongitude());
-        insertNewRecordingIntoDB(new Recording(new Date(), "User name", currentRecordingName, hereNow));
+        insertNewRecordingIntoDB(new Recording(new Date(), name, currentRecordingName, hereNow));
     }
 
     public void insertNewRecordingIntoDB(Recording newRecording) {
